@@ -1,15 +1,16 @@
 import React from "react";
+import { renderRoutes } from "react-router-config";
+import routes from "./routes/index.js";
+import { HashRouter } from "react-router-dom";
+import './style/index.scss'
+
 
 function App() {
-  // construter(props) {
-
-  // }
   return (
-    <div className="App">
-      <div className="header">123</div>
-      <div className="footer">
-        <div></div>
-      </div>
-    </div>
-  )
+    <HashRouter>
+      {renderRoutes(routes)}
+    </HashRouter>
+  );
 }
+
+export default App;
