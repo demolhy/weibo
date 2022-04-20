@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 // import { renderRoutes } from "react-router-config";
 
-function Home(props) {
+function Home() {
   // const { route } = props
   // construter(props) {
 
