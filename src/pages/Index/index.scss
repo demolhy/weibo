@@ -1,10 +1,14 @@
-.swiper-container-horizontal>.swiper-pagination-bullets .swiper-pagination-bullet{
+.swiper-container-horizontal>.swiper-pagination-bullets .swiper-pagination-bullet {
   margin: 0 30px;
 }
-.swiper-pagination{
+
+.swiper-pagination {
   position: fixed;
 }
-.swiper-container-horizontal>.swiper-pagination-bullets, .swiper-pagination-custom, .swiper-pagination-fraction{
+
+.swiper-container-horizontal>.swiper-pagination-bullets,
+.swiper-pagination-custom,
+.swiper-pagination-fraction {
   bottom: auto;
   top: 0;
   padding: 10px 0;
@@ -12,69 +16,120 @@
   border-bottom: 1px solid #eee;
   z-index: 999;
 }
-.swiper-pagination-bullet{
+
+.swiper-pagination-bullet {
   width: auto;
   height: auto;
   background: transparent;
   opacity: 1;
 }
-.swiper-pagination-bullet-active{
+
+.swiper-pagination-bullet-active {
   color: rgb(239, 112, 14);
 }
-.content{
-  padding-top: 39px;
+
+.content {
+  padding: 39px 0;
+  background-color: #fff;
 }
 
-.list{
+.list {
   background-color: #fff;
   border-top: 1px solid #eee;
   padding: 10px 15px;
-  .list-header{
+
+  .list-header {
     display: flex;
     width: 100%;
-    .icon{
-      img{
+
+    .icon {
+      img {
         width: 40px;
         height: 40px;
         border-radius: 50%;
       }
     }
-    .text{
+
+    .text {
       margin-left: 10px;
-      .title{
+
+      .title {
         font-size: 15px;
       }
-      .time{
+
+      .time {
         font-size: 12px;
         color: #999;
         margin-top: 2px;
       }
     }
   }
-  .list-content{
+
+  .list-content {
     margin: 15px 0;
     font-size: 16px;
-    img{
+    line-height: 25px;
+
+    a {
+      color: #3c6e9e;
+    }
+
+    img {
       width: 29.4vw;
       height: 29.4vw;
       margin-top: 5px;
       margin-right: 5px;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: 50%;
+    }
+
+    .imgs {
+      display: flex;
+      flex-wrap: wrap;
+      margin-right: -5px;
+    }
+    .player{
+      width: 100%;
+      height: 400px;
+      margin: 10px 0;
+    }
+    video {
+      width: 100%;
+      height: 100%;
     }
   }
-  .list-footer{
+
+  .list-footer {
     display: flex;
-    .f-item{
+
+    .f-item {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      i{
+
+      i {
         font-size: 24px;
       }
-      span{
+
+      span {
         color: #333;
         margin-left: 2px;
       }
     }
   }
+}
+
+.video-react-controls-enabled{
+  padding-top: 0 !important;
+}
+.video-react.video-react-fluid{
+  height: 100%;
+}
+
+.video-react .video-react-big-play-button{
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

@@ -1,13 +1,46 @@
-/* eslint-disable */
 import React from 'react'
 import SwiperCore, { Pagination } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
+import { PullRefresh, Toast, List } from 'react-vant'
+import { getArticleList } from '~/api/index'
+import { Player } from 'video-react'
+// import dayjs from 'dayjs'
+import '../../../node_modules/video-react/dist/video-react.css' // import css
 import 'swiper/swiper-bundle.min.css'
 import './index.scss'
+import dayjs from 'dayjs'
 SwiperCore.use([Pagination])
 class Index extends React.Component {
   constructor(props) {
     super(props)
+  }
+  state = {
+    finished: false
+  }
+  onRefresh = (showToast) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (showToast) {
+          Toast.info('刷新成功')
+        }
+        // setCount(count + 1);
+        resolve(true)
+      }, 1000)
+    })
+  }
+  onLoad = () => {
+    Toast.info('触发')
+
+    this.setState({
+      finished: true
+    })
+    console.log(11, this.state.finished)
+    // const data = await getData();
+    // if (unmountedRef.current) return;
+    // setList((v) => [...v, ...data]);
+    // if (list.length >= 30) {
+    //   setFinished(true);
+    // }
   }
   sonRef = (ref) => {
     this.child = ref
@@ -45,7 +78,16 @@ class Index extends React.Component {
       >
         <SwiperSlide>
           <div className='content'>
-            <Son onRefChild={this.sonRef}></Son>
+            <PullRefresh headHeight='50' onRefresh={() => this.onRefresh(true)}>
+              {/* <Skeleton avatar /> */}
+              <List
+                offset='50'
+                finished={this.state.finished}
+                onLoad={this.onLoad}
+              >
+                <Son onRefChild={this.sonRef}></Son>
+              </List>
+            </PullRefresh>
           </div>
         </SwiperSlide>
         <SwiperSlide>
@@ -72,235 +114,96 @@ class Index extends React.Component {
 }
 
 class Son extends React.Component {
-  componentDidMount() {
-    this.props.onRefChild(this)
-  }
+  // componentDidMount() {
+  //   this.props.onRefChild(this)
+  // }
   state = {
+    hotList: [],
     info: 'lisa'
+  }
+  componentDidMount() {
+    this.getConetent()
+  }
+  componentWillUnmount = () => {
+    this.setState = () => {
+      return
+    }
+  }
+  getConetent = async () => {
+    await getArticleList().then(
+      (res) => {
+        console.log('get article response:', res.data.cards)
+        // console.log(res.data.cards[0].mblog.page_info.content2)
+        this.setState({
+          hotList: res.data.cards
+        })
+      },
+      () => {
+        console.log('get response failed!')
+      }
+    )
   }
   render() {
     return (
       <div>
-        <div className='list'>
-          <div className='list-header'>
-            <div className='icon'>
-              <img
-                src='https://tvax1.sinaimg.cn/crop.0.0.690.690.180/002TLsr9ly8gzemrotb6xj60j60j6js602.jpg?KID=imgbed,tva&Expires=1650458200&ssig=SC2NOKBf%2FB'
-                alt=''
-              />
+        {this.state.hotList.map((item) => (
+          <div className='list' key={item.itemid}>
+            <div className='list-header'>
+              <div className='icon'>
+                <img src={item.mblog.user.profile_image_url} alt='' />
+              </div>
+              <div className='text'>
+                <div className='title'>{item.mblog.user.screen_name}</div>
+                <div className='time'>
+                  {console.log(typeof(new Date(item.mblog.created_at).getTime()), new Date(item.mblog.created_at).getTime())}
+                  {dayjs(new Date(item.mblog.created_at).getTime()).format('YYYY-MM-DD')} <span>来自 {item.mblog.source}</span>
+                </div>
+              </div>
             </div>
-            <div className='text'>
-              <div className='title'>央视新闻</div>
-              <div className='time'>昨天 19:02</div>
+            <div className='list-content'>
+              <div
+                dangerouslySetInnerHTML={{ __html: item?.mblog?.text }}
+              ></div>
+              <div className='imgs'>
+                {item?.mblog?.pics &&
+                  item?.mblog?.pics.map((imgItem) => (
+                    <img
+                      src={imgItem.url}
+                      alt=''
+                      key={imgItem.url.toString()}
+                    />
+                  ))}
+              </div>
+              <div className='player-content'>
+                {/* {console.log(item.mblog.page_info.urls.mp4_720p_mp4)} */}
+                {item?.mblog?.page_info?.urls && (
+                  <div className='player'>
+                    <Player videoId='myplayer-container'>
+                      <source
+                        src={item?.mblog?.page_info?.urls?.mp4_720p_mp4}
+                      />
+                    </Player>
+                  </div>
+                )}
+              </div>
+              {/* {item?.mblog?.text} */}
             </div>
-          </div>
-          <div className='list-content'>
-            在微博发了一张图，被男朋友说了一顿
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-          </div>
-          <div className='list-footer'>
-            <div className='f-item'>
-              <i className='iconfont icon-share'></i>
-              <span>100</span>
-            </div>
-            <div className='f-item'>
-              <i className='iconfont icon-interactive'></i>
-              <span>100</span>
-            </div>
-            <div className='f-item'>
-              <i className='iconfont icon-praise'></i>
-              <span>100</span>
-            </div>
-          </div>
-        </div>
-        <div className='list'>
-          <div className='list-header'>
-            <div className='icon'>
-              <img
-                src='https://tvax1.sinaimg.cn/crop.0.0.690.690.180/002TLsr9ly8gzemrotb6xj60j60j6js602.jpg?KID=imgbed,tva&Expires=1650458200&ssig=SC2NOKBf%2FB'
-                alt=''
-              />
-            </div>
-            <div className='text'>
-              <div className='title'>央视新闻</div>
-              <div className='time'>昨天 19:02</div>
+            <div className='list-footer'>
+              <div className='f-item'>
+                <i className='iconfont icon-share'></i>
+                <span>{item.mblog.reposts_count}</span>
+              </div>
+              <div className='f-item'>
+                <i className='iconfont icon-interactive'></i>
+                <span>{item.mblog.comments_count}</span>
+              </div>
+              <div className='f-item'>
+                <i className='iconfont icon-praise'></i>
+                <span>{item.mblog.attitudes_count}</span>
+              </div>
             </div>
           </div>
-          <div className='list-content'>
-            在微博发了一张图，被男朋友说了一顿
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-          </div>
-          <div className='list-footer'>
-            <div className='f-item'>
-              <i className='iconfont icon-share'></i>
-              <span>100</span>
-            </div>
-            <div className='f-item'>
-              <i className='iconfont icon-interactive'></i>
-              <span>100</span>
-            </div>
-            <div className='f-item'>
-              <i className='iconfont icon-praise'></i>
-              <span>100</span>
-            </div>
-          </div>
-        </div>
-        <div className='list'>
-          <div className='list-header'>
-            <div className='icon'>
-              <img
-                src='https://tvax1.sinaimg.cn/crop.0.0.690.690.180/002TLsr9ly8gzemrotb6xj60j60j6js602.jpg?KID=imgbed,tva&Expires=1650458200&ssig=SC2NOKBf%2FB'
-                alt=''
-              />
-            </div>
-            <div className='text'>
-              <div className='title'>央视新闻</div>
-              <div className='time'>昨天 19:02</div>
-            </div>
-          </div>
-          <div className='list-content'>
-            在微博发了一张图，被男朋友说了一顿
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-          </div>
-          <div className='list-footer'>
-            <div className='f-item'>
-              <i className='iconfont icon-share'></i>
-              <span>100</span>
-            </div>
-            <div className='f-item'>
-              <i className='iconfont icon-interactive'></i>
-              <span>100</span>
-            </div>
-            <div className='f-item'>
-              <i className='iconfont icon-praise'></i>
-              <span>100</span>
-            </div>
-          </div>
-        </div>
-        <div className='list'>
-          <div className='list-header'>
-            <div className='icon'>
-              <img
-                src='https://tvax1.sinaimg.cn/crop.0.0.690.690.180/002TLsr9ly8gzemrotb6xj60j60j6js602.jpg?KID=imgbed,tva&Expires=1650458200&ssig=SC2NOKBf%2FB'
-                alt=''
-              />
-            </div>
-            <div className='text'>
-              <div className='title'>央视新闻</div>
-              <div className='time'>昨天 19:02</div>
-            </div>
-          </div>
-          <div className='list-content'>
-            在微博发了一张图，被男朋友说了一顿
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-            <img
-              src='https://wx3.sinaimg.cn/orj360/006ehT1Ygy1gznnrpvyfrj30j614m40b.jpg'
-              alt=''
-            />
-          </div>
-          <div className='list-footer'>
-            <div className='f-item'>
-              <i className='iconfont icon-praise'></i>
-              <span>100</span>
-            </div>
-            <div className='f-item'>
-              <i className='iconfont icon-praise'></i>
-              <span>100</span>
-            </div>
-            <div className='f-item'>
-              <i className='iconfont icon-praise'></i>
-              <span>100</span>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
     )
   }
