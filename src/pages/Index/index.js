@@ -228,7 +228,7 @@ class Son extends React.Component {
     return (
       <div>
         {this.props.datas.map((item) => (
-          <div className='list' key={item.itemid}>
+          <div className='list' key={item.itemid + Math.floor(Math.random(10)*1000000)}>
             <div className='list-header'>
               <div className='icon'>
                 <img src={item?.mblog?.user?.profile_image_url} alt='' />
