@@ -13,6 +13,10 @@ export function getOthoerList(params = 0) {
   return  http("get",'/api/other?page=' + params);
 }
 
+export function getDetails() {
+  return  http("get",'/api/details');
+}
+
 // export {
 //    getArticleList
 // }

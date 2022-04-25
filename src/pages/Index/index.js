@@ -2,9 +2,11 @@ import React from 'react'
 // import SwiperCore, { Pagination } from 'swiper'
 // import { Swiper, SwiperSlide } from 'swiper/react'
 import { PullRefresh, Toast, List, Tabs, ImagePreview } from 'react-vant'
+// import { useHistory } from 'react-router-dom'
 import { getArticleList, getOthoerList } from '~/api/index'
 import { Player } from 'video-react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 // import dayjs from 'dayjs'
 import '../../../node_modules/video-react/dist/video-react.css' // import css
 // import 'swiper/swiper-bundle.min.css'
@@ -162,7 +164,9 @@ class Middle extends React.Component {
           this.setState({
             hotList: hotArr
           })
-          // this.setFinishState(false)
+          setTimeout(()=> {
+            this.setFinishState(false)
+          },1000)
         },
         () => {
           console.log('get response failed!')
@@ -192,6 +196,7 @@ class Middle extends React.Component {
         <PullRefresh onRefresh={() => this.onRefresh(true)}>
           {/* <Skeleton avatar /> */}
           <List
+            offset='0'
             loading={this.state.finished}
             immediateCheck='false'
             onLoad={this.onLoad}
@@ -211,8 +216,12 @@ class Son extends React.Component {
   // componentDidMount() {
   //   this.props.onRefChild(this)
   // }
+  constructor(props) {
+    super(props)
+  }
   static propTypes = {
-    datas: PropTypes.array
+    datas: PropTypes.array,
+    history: PropTypes.func
   }
 
   state = {
@@ -223,12 +232,20 @@ class Son extends React.Component {
       return
     }
   }
+  // toLink = id => {
+  //   console.log(id);
+  //   // const history = useHistory()
+  //   console.log(this.props.history);
+  //   // this.props.history.push({
+  //   //   pathname: '/details'
+  //   // })
+  // }
 
   render() {
     return (
       <div>
-        {this.props.datas.map((item) => (
-          <div className='list' key={item.itemid + Math.floor(Math.random(10)*1000000)}>
+        {this.props.datas.map((item, index) => (
+          <div className='list' key={index}>
             <div className='list-header'>
               <div className='icon'>
                 <img src={item?.mblog?.user?.profile_image_url} alt='' />
@@ -244,43 +261,45 @@ class Son extends React.Component {
                 </div>
               </div>
             </div>
-            <div className='list-content'>
-              <div
-                dangerouslySetInnerHTML={{ __html: item?.mblog?.text }}
-              ></div>
-              <div className='imgs'>
-                {item?.mblog?.pics &&
-                  item.mblog.pics.map((imgItem) => (
-                    <img
-                      src={imgItem.url}
-                      alt=''
-                      key={imgItem.url.toString()}
-                      onClick={() =>
-                        ImagePreview.open({
-                          images: [imgItem.url],
-                          closeable: true
-                        })
-                      }
-                    />
-                  ))}
-              </div>
-              <div className='player-content'>
-                {/* {console.log(item.mblog.page_info.urls.mp4_720p_mp4)} */}
-                {item?.mblog?.page_info?.urls && (
-                  <div className='player'>
-                    <Player
-                      videoId='myplayer-container'
-                      poster={item?.mblog?.page_info?.page_pic?.url}
-                    >
-                      <source
-                        src={item?.mblog?.page_info?.urls?.mp4_720p_mp4}
+            <Link to='/details'>
+              <div className='list-content'>
+                <div
+                  dangerouslySetInnerHTML={{ __html: item?.mblog?.text }}
+                ></div>
+                <div className='imgs'>
+                  {item?.mblog?.pics &&
+                    item?.mblog?.pics.map((imgItem) => (
+                      <img
+                        src={imgItem.url}
+                        alt=''
+                        key={imgItem.url.toString()}
+                        onClick={() =>
+                          ImagePreview.open({
+                            images: [imgItem.url],
+                            closeable: true
+                          })
+                        }
                       />
-                    </Player>
-                  </div>
-                )}
+                    ))}
+                </div>
+                <div className='player-content'>
+                  {/* {console.log(item.mblog.page_info.urls.mp4_720p_mp4)} */}
+                  {item?.mblog?.page_info?.urls && (
+                    <div className='player'>
+                      <Player
+                        videoId='myplayer-container'
+                        poster={item?.mblog?.page_info?.page_pic?.url}
+                      >
+                        <source
+                          src={item?.mblog?.page_info?.urls?.mp4_720p_mp4}
+                        />
+                      </Player>
+                    </div>
+                  )}
+                </div>
+                {/* {item?.mblog?.text} */}
               </div>
-              {/* {item?.mblog?.text} */}
-            </div>
+            </Link>
             <div className='list-footer'>
               <div className='f-item'>
                 <i className='iconfont icon-share'></i>

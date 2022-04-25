@@ -19,7 +19,7 @@ function Home() {
             <div>首页</div>
           </div>
         </Link>
-        <Link to='/index1'>
+        <Link to='/details'>
           <div className='nav'>
             <i className='iconfont icon-search'></i>
             <div>热搜</div>
